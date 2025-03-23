@@ -22,7 +22,7 @@ Please ⭐️ this repo and share it with others
        git clone https://github.com/HouariZegai/Calculator.git
 3. Imported it in Intellij IDEA or any other Java IDE.
 4. Run the application :D
-
+then wait for output
 ## Contributing 💡
 If you want to contribute to this project and make it better with new ideas, your pull request is very welcomed.
 If you find any issue just put it in the repository issue section, thank you.
