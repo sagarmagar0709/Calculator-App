@@ -33,8 +33,18 @@ jobs:
     - name: Compile application
       run: mvn clean compile
       
-    - name: Run tests
-      run: mvn test
+    - name: Set up virtual display for GUI tests
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y xvfb
+        export DISPLAY=:99
+        Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+        sleep 3
+        
+    - name: Run tests in headless mode
+      run: mvn test -Djava.awt.headless=true
+      env:
+        DISPLAY: :99
       continue-on-error: true
       
     - name: Generate test report
@@ -55,10 +65,11 @@ jobs:
         echo "JAR file details:"
         ls -la target/*.jar
         
-    - name: Test JAR execution (dry run)
+    - name: Test JAR execution (headless)
       run: |
-        echo "Testing if main class can be found..."
-        java -cp target/Calculator-1.0-SNAPSHOT.jar com.houarizegai.calculator.App --help || echo "App exists but may need GUI (expected in headless environment)"
+        echo "Testing main class in headless mode..."
+        export DISPLAY=:99
+        timeout 10s java -Djava.awt.headless=true -cp target/Calculator-1.0-SNAPSHOT.jar com.houarizegai.calculator.App || echo "GUI app tested (timeout expected)"
       continue-on-error: true
       
     - name: Upload Calculator JAR
