@@ -1,0 +1,5 @@
+FROM
+
+RUN
+EXPOSE 8080
+CMD["",""]
