@@ -3,86 +3,96 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
                              http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.example</groupId>
-    <artifactId>calculator-app</artifactId>
-    <version>1.0.0</version>
-    <packaging>jar</packaging>
+  <groupId>com.example</groupId>
+  <artifactId>calculator-app</artifactId>
+  <version>1.0.0</version>
+  <packaging>jar</packaging>
 
-    <name>Spring Boot Calculator App</name>
+  <name>Spring Boot Calculator App</name>
 
-    <properties>
-        <java.version>17</java.version>
-        <spring-boot.version>3.1.2</spring-boot.version>
-        <maven.compiler.source>${java.version}</maven.compiler.source>
-        <maven.compiler.target>${java.version}</maven.compiler.target>
-    </properties>
+  <properties>
+    <java.version>17</java.version>
+    <spring-boot.version>3.1.2</spring-boot.version>
+    <maven.compiler.source>${java.version}</maven.compiler.source>
+    <maven.compiler.target>${java.version}</maven.compiler.target>
+  </properties>
 
+  <!-- ✅ Import Spring Boot BOM -->
+  <dependencyManagement>
     <dependencies>
-        <!-- Spring Boot Starter -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-        </dependency>
-
-        <!-- Spring Boot Test -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- Optional: GUI-based testing -->
-        <!-- Keep this if you’re using Swing/JavaFX etc -->
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-swing-junit</artifactId>
-            <version>3.17.1</version>
-            <scope>test</scope>
-        </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${spring-boot.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
     </dependencies>
+  </dependencyManagement>
 
-    <build>
+  <dependencies>
+    <!-- ✅ No need to specify version now -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Optional: UI testing -->
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-swing-junit</artifactId>
+      <version>3.17.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <!-- ✅ Added plugin version -->
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>${spring-boot.version}</version>
+      </plugin>
+
+      <!-- Surefire Plugin -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.2.5</version>
+        <configuration>
+          <excludes>
+            <exclude>**/*UITest.java</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>ci</id>
+      <build>
         <plugins>
-            <!-- Spring Boot Plugin -->
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-
-            <!-- Surefire Plugin for Test Control -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.2.5</version>
-                <configuration>
-                    <excludes>
-                        <!-- Exclude UI tests in CI -->
-                        <exclude>**/*UITest.java</exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <excludes>
+                <exclude>**/*UITest.java</exclude>
+              </excludes>
+            </configuration>
+          </plugin>
         </plugins>
-    </build>
-
-    <profiles>
-        <!-- Exclude UI tests profile (for GitHub Actions / CI) -->
-        <profile>
-            <id>ci</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <excludes>
-                                <exclude>**/*UITest.java</exclude>
-                            </excludes>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
+      </build>
+    </profile>
+  </profiles>
 </project>
