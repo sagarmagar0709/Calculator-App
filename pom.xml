@@ -1,32 +1,88 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.houari</groupId>
-    <artifactId>Calculator</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <groupId>com.example</groupId>
+    <artifactId>calculator-app</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+
+    <name>Spring Boot Calculator App</name>
 
     <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-        <jackson-dataformat-yaml.version>2.14.2</jackson-dataformat-yaml.version>
-        <junit-jupiter-params.version>5.9.2</junit-jupiter-params.version>
+        <java.version>17</java.version>
+        <spring-boot.version>3.1.2</spring-boot.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
     </properties>
 
     <dependencies>
+        <!-- Spring Boot Starter -->
         <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
-            <artifactId>jackson-dataformat-yaml</artifactId>
-            <version>${jackson-dataformat-yaml.version}</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
         </dependency>
 
+        <!-- Spring Boot Test -->
         <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-params</artifactId>
-            <version>${junit-jupiter-params.version}</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Optional: GUI-based testing -->
+        <!-- Keep this if you’re using Swing/JavaFX etc -->
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-swing-junit</artifactId>
+            <version>3.17.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Spring Boot Plugin -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+
+            <!-- Surefire Plugin for Test Control -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+                <configuration>
+                    <excludes>
+                        <!-- Exclude UI tests in CI -->
+                        <exclude>**/*UITest.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <!-- Exclude UI tests profile (for GitHub Actions / CI) -->
+        <profile>
+            <id>ci</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/*UITest.java</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
